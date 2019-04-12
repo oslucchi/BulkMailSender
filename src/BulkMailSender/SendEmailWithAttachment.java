@@ -47,7 +47,9 @@ public class SendEmailWithAttachment {
 		int emailSentCheckbox = 1; // colonna in cui si trova il checkbox quando una mail risulta inviata
 		String emailSentBy = "Osvaldo.Lucchini@wedi.it";
 		String excelEmailTOFieldName = "Mail";
-		String excelEmailCCFieldName = "Mail-CC"; // "Agente;CapoArea"; // "Marco.Diterlizzi@wedi.it,Stefano.Broccoletti@wedi.it";
+		String excelEmailCCFieldName = "Mail-CC"; // it could be a list of column headers (e.g. "Agente;CapoArea") a single
+												  // column (e.g. "Mail") or an effective mail address 
+												  // (e.g. "Marco.Diterlizzi@wedi.it,Stefano.Broccoletti@wedi.it")
 		String excelEmailBCCFieldName = "osvaldo.lucchini@wedi.it";
 		String excelEmailAttachFilesFolder = ".\\docs\\condizioni2019\\Documenti\\";
 		String excelEmailAttachFilesExt = ".pdf";
@@ -175,7 +177,12 @@ public class SendEmailWithAttachment {
 					countSent = 1;
 				}
 				
-				System.out.print("Row " + excel.rowIdx + " - client " + excel.getEmail());
+				String cliente = excel.getField(3);
+				if (cliente.length() > 15)
+				{
+					cliente = cliente.substring(0, 15);
+				}
+				System.out.print("Row " + excel.rowIdx + " - client " + cliente );
 				// Create a default MimeMessage object.
 				Message message = new MimeMessage(session);
 
@@ -254,7 +261,7 @@ public class SendEmailWithAttachment {
 					// Send the complete message parts
 					message.setContent(multipart);
 
-					System.out.print(" sending to " + excel.getField(1) + " " +
+					System.out.print(" sending to " + excel.getEmail() + " " +
 							excel.getEmailCCValue() + " " + excel.getEmailBCCValue());
 					Transport.send(message);
 					System.out.println(" - sent successfully....");
